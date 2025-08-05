@@ -74,7 +74,7 @@ def send_email(content, topic):
         smtp_port = 587
         sender_email = os.getenv('GMAIL_EMAIL')
         sender_password = os.getenv('GMAIL_APP_PASSWORD')
-        to_email = "devfst1234@gmail.com,dijosylvester09@gmail.com"
+        to_email = "dijosylvester09@gmail.com,nimidakathaigal@gmail.com"
         recipient_list = [email.strip() for email in to_email.split(",")]
         
         if not all([sender_email, sender_password]):
