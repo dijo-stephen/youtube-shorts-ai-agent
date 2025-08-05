@@ -281,6 +281,7 @@
                 submitBtn.textContent = '🚀 Generate Content';
             }
         });
+        }
 
         async function triggerGitHubWorkflow(token, username, repo, topic) {
             const url = `https://api.github.com/repos/${username}/${repo}/actions/workflows/generate-content.yml/dispatches`;
@@ -373,7 +374,7 @@
                 }, 10000);
             }
         }
-        }
+        
     </script>
 </body>
 </html>
