@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Shorts AI Content Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.2em;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.processing {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        .example {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .example-text {
+            color: #666;
+            font-style: italic;
+        }
+        
+
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e1e5e9;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .processing .progress-fill {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 YouTube Shorts AI</h1>
+        <p class="subtitle">Generate engaging content scripts in seconds</p>
+        
+
+            
+            <div class="form-group">
+                <label for="topic">Enter Your Topic:</label>
+                <input type="text" 
+                       id="topic" 
+                       name="topic" 
+                       placeholder="e.g., Ancient Egypt, Black Holes, Coffee, etc." 
+                       required>
+                
+                <div class="example">
+                    <div class="example-title">💡 Examples:</div>
+                    <div class="example-text">Ancient Egypt, Quantum Physics, Coffee Culture, Ocean Mysteries, Space Exploration</div>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                🚀 Generate Content
+            </button>
+        </form>
+        
+        <div id="status" class="status">
+            <div id="status-text"></div>
+            <div class="progress-bar" id="progress-bar" style="display: none;">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GitHub configuration - loaded from environment variables at build time
+        function getGitHubConfig() {
+            // These will be injected at build time by your build system
+            const config = {
+                githubToken: TOKEN_GITHUB,
+                githubUsername: GITHUB_USERNAME || 'dijo-stephen',
+                repoName: GITHUB_REPO_NAME || 'youtube-shorts-ai-agent'
+            };
+            
+            if (!config.githubToken) {
+                throw new Error('GitHub token not found. Please set GITHUB_TOKEN environment variable.');
+            }
+            
+            return config;
+        }
+
+        document.getElementById('contentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const topic = document.getElementById('topic').value.trim();
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!topic) {
+                showStatus('Please enter a topic!', 'error');
+                return;
+            }
+            
+            // Disable button and show processing
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processing...';
+            showStatus('🔧 Loading configuration...', 'processing', true);
+            
+            try {
+                // Get GitHub configuration from environment variables
+                const config = getGitHubConfig();
+                
+                if (!config.githubToken) {
+                    throw new Error('GitHub token not configured. Please set GITHUB_TOKEN environment variable.');
+                }
+                
+                showStatus('🚀 Triggering GitHub Actions workflow...', 'processing', true);
+                
+                await triggerGitHubWorkflow(config.githubToken, config.githubUsername, config.repoName, topic);
+                showStatus('✅ Workflow triggered successfully! Check your email in 2-3 minutes for results.', 'success');
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Generate Content';
+            }
+        });
+
+        async function triggerGitHubWorkflow(token, username, repo, topic) {
+            const url = `https://api.github.com/repos/${username}/${repo}/actions/workflows/generate-content.yml/dispatches`;
+            
+            updateProgress(25, 'Connecting to GitHub API...');
+            
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json',
+                    'User-Agent': 'YouTube-Shorts-AI-Generator'
+                },
+                body: JSON.stringify({
+                    ref: 'main', // or 'master' depending on your default branch
+                    inputs: {
+                        topic: topic
+                    }
+                })
+            });
+
+            updateProgress(75, 'Sending workflow trigger request...');
+
+            if (!response.ok) {
+                const errorData = await response.text();
+                let errorMessage = `HTTP ${response.status}`;
+                
+                try {
+                    const errorJson = JSON.parse(errorData);
+                    errorMessage = errorJson.message || errorMessage;
+                } catch (e) {
+                    // If not JSON, use the raw text or status
+                    errorMessage = errorData || errorMessage;
+                }
+                
+                if (response.status === 401) {
+                    errorMessage = 'Invalid GitHub token. Please check your Personal Access Token.';
+                } else if (response.status === 404) {
+                    errorMessage = 'Repository or workflow not found. Please check your username, repo name, and workflow file.';
+                } else if (response.status === 422) {
+                    errorMessage = 'Workflow dispatch failed. Make sure the workflow file exists and has workflow_dispatch trigger.';
+                }
+                
+                throw new Error(errorMessage);
+            }
+
+            updateProgress(100, 'Workflow triggered successfully!');
+            
+            // Keep progress bar visible for a moment
+            setTimeout(() => {
+                hideProgress();
+            }, 2000);
+        }
+
+        function updateProgress(percentage, message) {
+            const progressBar = document.getElementById('progress-bar');
+            const progressFill = document.getElementById('progress-fill');
+            const statusText = document.getElementById('status-text');
+            
+            statusText.textContent = message;
+            progressBar.style.display = 'block';
+            progressFill.style.width = percentage + '%';
+        }
+
+        function hideProgress() {
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.display = 'none';
+        }
+        
+        function showStatus(message, type, showProgress = false) {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('status-text');
+            const progressBar = document.getElementById('progress-bar');
+            
+            statusText.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            if (showProgress) {
+                progressBar.style.display = 'block';
+                document.getElementById('progress-fill').style.width = '0%';
+            } else {
+                progressBar.style.display = 'none';
+            }
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 10000);
+            }
+        }
+    </script>
+</body>
+</html>
