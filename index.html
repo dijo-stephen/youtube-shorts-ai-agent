@@ -192,7 +192,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎬 YouTube Shorts AI Agent</h1>
+        <h1>🎬 YouTube Shorts AI</h1>
         <p class="subtitle">Generate engaging content scripts in seconds</p>
         
 
@@ -225,23 +225,26 @@
     </div>
 
     <script>
-        // GitHub configuration - loaded from environment variables at build time
-        function getGitHubConfig() {
-            // These will be injected at build time by your build system
-            const config = {
-                githubToken: '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',
-                githubUsername: GITHUB_USERNAME || 'dijo-stephen',
-                repoName: GITHUB_REPO_NAME || 'youtube-shorts-ai-agent'
-            };
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
             
-            if (!config.githubToken) {
-                throw new Error('GitHub token not found. Please set GITHUB_TOKEN environment variable.');
+            // GitHub configuration - you need to set these values
+            function getGitHubConfig() {
+                // TODO: Replace these with your actual values
+                const config = {
+                    githubToken: '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', // Replace with your actual GitHub token
+                    githubUsername: 'dijo-stephen',
+                    repoName: 'youtube-shorts-ai-agent'
+                };
+                
+                if (!config.githubToken || config.githubToken === 'ghp_YOUR_GITHUB_TOKEN_HERE') {
+                    throw new Error('Please replace "ghp_YOUR_GITHUB_TOKEN_HERE" with your actual GitHub Personal Access Token in the code.');
+                }
+                
+                return config;
             }
-            
-            return config;
-        }
 
-        document.getElementById('contentForm').addEventListener('submit', async function(e) {
+            document.getElementById('contentForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const topic = document.getElementById('topic').value.trim();
