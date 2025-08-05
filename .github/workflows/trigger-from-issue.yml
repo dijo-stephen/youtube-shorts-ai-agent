@@ -1,0 +1,21 @@
+name: Trigger on New Issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract topic from issue
+        run: |
+          echo "Topic: ${{ github.event.issue.title }}"
+      
+      - name: Trigger main content generation workflow
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          repository: dijo-stephen/youtube-shorts-ai-agent
+          event-type: trigger-content
+          client-payload: '{"topic": "${{ github.event.issue.title }}"}'
